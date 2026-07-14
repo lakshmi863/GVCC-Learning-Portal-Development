@@ -11,7 +11,10 @@ const videoRoutes = require('./routes/videoRoutes');
 connectDB();
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:5173", // URL of your Frontend
+    credentials: true
+}));
 app.use(express.json());
 
 // API Routes
