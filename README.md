@@ -2,7 +2,8 @@ GVCC Learning Portal
 Learn. Watch. Bookmark. Succeed.
 Interview Community is a premium, full-stack video learning platform designed for modern engineers. It features a sleek Dark-Mode Landing Page and a highly productive Light-Mode Dashboard with time-stamped bookmarking, progress tracking, and professional-grade security.
 
-![alt text](https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80)
+<img width="1536" height="1024" alt="home and login " src="https://github.com/user-attachments/assets/218ed99a-0be0-48b8-bad2-46307239a772" />
+
 
 🚀 Live Demo
 
@@ -64,41 +65,8 @@ GVCC-Learning-Portal/
 
 Architecture Flow
 
-                     USER
-                       │
-                       ▼
-               React Frontend (Vite)
-                       │
-      ┌────────────────┼────────────────┐
-      │                │                │
-      ▼                ▼                ▼
- Authentication   Video Module    Bookmark Module
-      │                │                │
-      └────────────────┼────────────────┘
-                       │
-                Axios API Requests
-                       │
-                       ▼
-          Express.js REST API Server
-                       │
-      ┌────────────────┼─────────────────┐
-      │                │                 │
-      ▼                ▼                 ▼
- Auth Routes     Video Routes     Bookmark Routes
-      │                │                 │
-      ▼                ▼                 ▼
- Controllers    Controllers      Controllers
-      │                │                 │
-      └────────────────┼─────────────────┘
-                       │
-                  Mongoose Models
-                       │
-      ┌────────────────┼─────────────────┐
-      ▼                ▼                 ▼
-     User           Video           Bookmark
-                       │
-                       ▼
-                  MongoDB Atlas
+     <img width="587" height="577" alt="image" src="https://github.com/user-attachments/assets/ef8d28d3-642f-4c65-afd2-92674fa2f3af" />
+
         
 
 ⚙️ Setup & Installation
