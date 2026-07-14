@@ -62,6 +62,45 @@ GVCC-Learning-Portal/
         ├── services/    # Axios API interceptors
         └── features/    # Redux Slices (Auth/Videos)
 
+Architecture Flow
+
+                     USER
+                       │
+                       ▼
+               React Frontend (Vite)
+                       │
+      ┌────────────────┼────────────────┐
+      │                │                │
+      ▼                ▼                ▼
+ Authentication   Video Module    Bookmark Module
+      │                │                │
+      └────────────────┼────────────────┘
+                       │
+                Axios API Requests
+                       │
+                       ▼
+          Express.js REST API Server
+                       │
+      ┌────────────────┼─────────────────┐
+      │                │                 │
+      ▼                ▼                 ▼
+ Auth Routes     Video Routes     Bookmark Routes
+      │                │                 │
+      ▼                ▼                 ▼
+ Controllers    Controllers      Controllers
+      │                │                 │
+      └────────────────┼─────────────────┘
+                       │
+                  Mongoose Models
+                       │
+      ┌────────────────┼─────────────────┐
+      ▼                ▼                 ▼
+     User           Video           Bookmark
+                       │
+                       ▼
+                  MongoDB Atlas
+        
+
 ⚙️ Setup & Installation
 
 1. Clone the repository
