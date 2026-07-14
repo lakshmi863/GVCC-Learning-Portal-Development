@@ -51,26 +51,26 @@ Text
 GVCC-Learning-Portal/
 
 ├── Backend/ 
-# Express.js Server
+
 │   ├── config/
-# DB Configuration
+
 │   ├── controllers/ 
-# API logic (Auth, Videos, Bookmarks)
+
 │   ├── models/ 
-# Database Schemas
+
 │   ├── routes/ 
-# Express Routes
+
 │   └── index.js 
-# Entry Point
+
 
 └── Frontend/ 
-# React (Vite) Client
+
     ├── public/  
-    # Static Assets
+  
     └── src/
     
         ├── components/
-        # Layouts, Sidebar, ProtectionWrapper
+       
         ├── pages/ 
         # Landing, Dashboard, VideoDetail
         ├── services/
