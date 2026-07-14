@@ -80,7 +80,8 @@ GVCC-Learning-Portal/
 
 Architecture Flow
 
-     <img width="587" height="577" alt="image" src="https://github.com/user-attachments/assets/ef8d28d3-642f-4c65-afd2-92674fa2f3af" />
+    <img width="592" height="607" alt="image" src="https://github.com/user-attachments/assets/1900c0ef-9fee-48b6-9fde-116837a5214e" />
+
 
         
 
