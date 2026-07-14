@@ -49,19 +49,34 @@ Bcrypt.js: Advanced password hashing for student privacy.
 code
 Text
 GVCC-Learning-Portal/
-├── Backend/             # Express.js Server
-│   ├── config/          # DB Configuration
-│   ├── controllers/     # API logic (Auth, Videos, Bookmarks)
-│   ├── models/          # Database Schemas
-│   ├── routes/          # Express Routes
-│   └── index.js         # Entry Point
-└── Frontend/            # React (Vite) Client
-    ├── public/          # Static Assets
+
+├── Backend/ 
+# Express.js Server
+│   ├── config/
+# DB Configuration
+│   ├── controllers/ 
+# API logic (Auth, Videos, Bookmarks)
+│   ├── models/ 
+# Database Schemas
+│   ├── routes/ 
+# Express Routes
+│   └── index.js 
+# Entry Point
+
+└── Frontend/ 
+# React (Vite) Client
+    ├── public/  
+    # Static Assets
     └── src/
-        ├── components/  # Layouts, Sidebar, ProtectionWrapper
-        ├── pages/       # Landing, Dashboard, VideoDetail
-        ├── services/    # Axios API interceptors
-        └── features/    # Redux Slices (Auth/Videos)
+    
+        ├── components/
+        # Layouts, Sidebar, ProtectionWrapper
+        ├── pages/ 
+        # Landing, Dashboard, VideoDetail
+        ├── services/
+        # Axios API interceptors
+        └── features/ 
+        # Redux Slices (Auth/Videos)
 
 Architecture Flow
 
