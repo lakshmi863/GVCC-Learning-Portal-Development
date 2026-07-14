@@ -1,177 +1,98 @@
 import React, { useEffect, useState } from 'react';
 import { getVideos } from '../services/videoService';
-import { Link } from 'react-router-dom';
-import { PlayCircle, History } from 'lucide-react';
-
-const PROGRESS_KEY = 'watchProgress';
-const RECENT_KEY = 'recentVideos';
+import { Link, useNavigate } from 'react-router-dom';
+import { Search, Bell, LayoutDashboard, Film, Bookmark, User, LogOut, PlayCircle } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../features/authSlice';
 
 const Dashboard = () => {
   const [videos, setVideos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [progressMap, setProgressMap] = useState({});
-  const [recentIds, setRecentIds] = useState([]);
+  const [search, setSearch] = useState("");
+  const { user } = useSelector(state => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    getVideos()
-      .then((data) => {
-        setVideos(data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-
-    try {
-      setProgressMap(JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'));
-      setRecentIds(JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'));
-    } catch {
-      // ignore corrupted localStorage
-    }
+    getVideos().then(setVideos);
   }, []);
 
-  const handleImageError = (e) => {
-    if (e.target.src.includes('maxresdefault')) {
-      e.target.src = e.target.src.replace('maxresdefault', 'hqdefault');
-    } else {
-      e.target.src = 'https://via.placeholder.com/640x360?text=Preview+Unavailable';
-    }
-  };
-
-  const getProgressPct = (videoId) => {
-    const p = progressMap[videoId];
-    if (!p || !p.duration) return 0;
-    return Math.min(100, Math.round((p.time / p.duration) * 100));
-  };
-
-  // Videos with meaningful progress that isn't "finished"
-  const continueWatching = videos.filter((v) => {
-    const pct = getProgressPct(v._id);
-    return pct > 3 && pct < 95;
-  });
-
-  // Recently watched, most-recent-first, mapped to full video objects
-  const recentlyWatched = recentIds
-    .map((id) => videos.find((v) => v._id === id))
-    .filter(Boolean);
-
-  const VideoCard = ({ v, showProgress = true }) => (
-    <Link
-      key={v._id}
-      to={`/video/${v._id}`}
-      className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col"
-    >
-      <div className="relative aspect-video overflow-hidden">
-        <img
-          src={v.thumbnailUrl}
-          onError={handleImageError}
-          className="w-full h-full object-cover transform group-hover:scale-105 transition duration-500"
-          alt={v.title}
-        />
-        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-          <PlayCircle className="text-white drop-shadow-lg" size={48} />
-        </div>
-        <div className="absolute bottom-2 right-2 bg-black/70 backdrop-blur-md text-white text-[11px] px-2 py-1 rounded-md font-bold">
-          {v.duration}
-        </div>
-      </div>
-
-      <div className="p-5 flex-grow">
-        <h3 className="font-bold text-gray-800 text-lg line-clamp-2 leading-tight group-hover:text-blue-600 transition">
-          {v.title}
-        </h3>
-        <p className="text-gray-500 text-sm mt-2 line-clamp-2 italic">
-          {v.description || 'Start learning the core concepts of this lesson.'}
-        </p>
-      </div>
-
-      {showProgress && (
-        <div className="w-full h-1 bg-gray-100 group-hover:bg-blue-100">
-          <div
-            className="h-full bg-blue-600 transition-all duration-700"
-            style={{ width: `${getProgressPct(v._id)}%` }}
-          />
-        </div>
-      )}
-    </Link>
+  // SEARCH FILTER LOGIC
+  const filteredVideos = videos.filter(v => 
+    v.title.toLowerCase().includes(search.toLowerCase())
   );
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto">
-        <header className="mb-10">
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-            Continue Your <span className="text-blue-600">Learning</span>
-          </h1>
-          <p className="text-gray-500 mt-2">Pick up exactly where you left off in your bookmarks.</p>
+    <div className="flex h-screen bg-[#f3f5f9] overflow-hidden">
+      
+      {/* --- SIDEBAR --- */}
+      <aside className="w-64 bg-[#0f111a] text-gray-400 p-6 flex flex-col shrink-0">
+        <div className="flex items-center gap-2 text-white font-bold text-xl mb-12 italic border-b border-gray-800 pb-6">
+          <div className="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center text-xs not-italic">G</div> GVCC
+        </div>
+        <nav className="space-y-2 flex-1">
+          <button className="w-full flex items-center gap-3 px-4 py-3 bg-blue-600/10 text-white rounded-xl border-l-4 border-blue-600">
+             <LayoutDashboard size={20} className="text-blue-500"/><span className="font-semibold text-sm">Dashboard</span>
+          </button>
+          <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-800 transition rounded-xl"><Film size={20}/><span className="text-sm">All Videos</span></button>
+          <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-800 transition rounded-xl"><Bookmark size={20}/><span className="text-sm">Bookmarks</span></button>
+          <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-800 transition rounded-xl"><User size={20}/><span className="text-sm">Profile</span></button>
+        </nav>
+        <button onClick={() => { dispatch(logout()); navigate('/login'); }} className="flex items-center gap-3 p-3 hover:text-red-400 transition text-sm font-bold border-t border-gray-800 pt-6">
+          <LogOut size={20}/> Logout
+        </button>
+      </aside>
+
+      {/* --- MAIN --- */}
+      <main className="flex-1 flex flex-col overflow-hidden">
+        
+        {/* --- TOP HEADER --- */}
+        <header className="h-20 bg-white border-b flex items-center justify-between px-8 shrink-0">
+           <div className="relative w-full max-w-md">
+             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18}/>
+             <input type="text" placeholder="Search videos..." className="w-full pl-12 pr-4 py-2.5 bg-[#f3f5f9] rounded-xl outline-none" onChange={(e) => setSearch(e.target.value)} />
+           </div>
+           <div className="flex items-center gap-6">
+              <Bell className="text-gray-400 hover:text-blue-600 cursor-pointer" size={20}/>
+              <div className="flex items-center gap-3 border-l pl-6">
+                <div className="text-right hidden sm:block leading-none">
+                  <p className="text-sm font-black text-gray-800">{user?.name || "Vasu"}</p>
+                  <p className="text-[10px] text-blue-500 font-bold uppercase mt-1">Premium Student</p>
+                </div>
+                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name}`} className="w-10 h-10 rounded-xl bg-gray-100 border p-0.5" />
+              </div>
+           </div>
         </header>
 
-        {/* Continue Watching */}
-        {continueWatching.length > 0 && (
-          <section className="mb-12">
-            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <PlayCircle size={20} className="text-blue-600" /> Continue Watching
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {continueWatching.map((v) => (
-                <VideoCard key={v._id} v={v} />
-              ))}
-            </div>
-          </section>
-        )}
+        {/* --- CONTENT AREA --- */}
+        <div className="flex-1 overflow-y-auto p-8 bg-[#f3f5f9]">
+           <div className="flex justify-between items-center mb-10">
+              <h2 className="text-3xl font-black text-gray-800 tracking-tight uppercase">Featured Lessons</h2>
+              <button className="text-blue-600 bg-white border px-6 py-2.5 rounded-xl font-bold text-sm shadow-sm">View All</button>
+           </div>
 
-        {/* Recently Watched */}
-        {recentlyWatched.length > 0 && (
-          <section className="mb-12">
-            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <History size={20} className="text-blue-600" /> Recently Watched
-            </h2>
-            <div className="flex gap-4 overflow-x-auto pb-2">
-              {recentlyWatched.map((v) => (
-                <Link
-                  key={v._id}
-                  to={`/video/${v._id}`}
-                  className="group flex-shrink-0 w-56 bg-white rounded-xl shadow-sm hover:shadow-lg transition overflow-hidden border border-gray-100"
-                >
-                  <div className="relative aspect-video overflow-hidden">
-                    <img
-                      src={v.thumbnailUrl}
-                      onError={handleImageError}
-                      className="w-full h-full object-cover"
-                      alt={v.title}
-                    />
+           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-10">
+             {filteredVideos.map(v => (
+               <Link key={v._id} to={`/video/${v._id}`} className="group bg-white p-3 rounded-[32px] shadow-sm hover:shadow-2xl transition-all duration-500 border border-transparent hover:border-blue-100">
+                  <div className="relative overflow-hidden rounded-[24px] aspect-video">
+                    <img src={v.thumbnailUrl} className="w-full h-full object-cover transform group-hover:scale-105 transition duration-700" alt={v.title} />
+                    <span className="absolute bottom-3 right-3 bg-black/80 text-white text-[10px] font-black px-2 py-1 rounded-lg"> {v.duration} </span>
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                       <PlayCircle className="text-white" size={48} />
+                    </div>
                   </div>
-                  <div className="p-3">
-                    <p className="text-sm font-semibold text-gray-800 line-clamp-1">{v.title}</p>
+                  <div className="p-4 pt-6 space-y-3">
+                     <h3 className="font-black text-gray-800 text-xs uppercase tracking-widest group-hover:text-blue-600 line-clamp-1 leading-snug">{v.title}</h3>
+                     <p className="text-gray-400 text-[11px] leading-relaxed line-clamp-2">{v.description}</p>
+                     <div className="pt-4 border-t flex justify-between items-center text-[10px] font-bold">
+                        <span className="text-gray-400 uppercase tracking-tighter">1k+ Learning</span>
+                        <span className="bg-green-100 text-green-600 px-2 py-1 rounded uppercase">Active</span>
+                     </div>
                   </div>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* All Videos */}
-        <section>
-          <h2 className="text-xl font-bold text-gray-800 mb-4">All Lessons</h2>
-          {videos.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed">
-              <p className="text-gray-400 text-lg">No lessons available in the database yet.</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {videos.map((v) => (
-                <VideoCard key={v._id} v={v} />
-              ))}
-            </div>
-          )}
-        </section>
-      </div>
+               </Link>
+             ))}
+           </div>
+        </div>
+      </main>
     </div>
   );
 };

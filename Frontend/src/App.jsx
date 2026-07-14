@@ -1,9 +1,8 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import Navbar from './components/Navbar';
-import OfflineScreen from './components/OfflineScreen';
 
+const LandingPage = lazy(() => import('./pages/LandingPage'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const VideoDetail = lazy(() => import('./pages/VideoDetail'));
 const Login = lazy(() => import('./pages/Login'));
@@ -14,14 +13,13 @@ function App() {
 
   return (
     <Router>
-      <OfflineScreen /> {/* Shows full-screen overlay when connection drops */}
-      <Navbar /> {/* Now Navbar appears on every page for logged-in users */}
-      <Suspense fallback={<div className="h-screen flex items-center justify-center">Loading Module...</div>}>
+      <Suspense fallback={<div className="h-screen bg-[#0f111a] text-white flex items-center justify-center font-bold">INITIALIZING PORTAL...</div>}>
         <Routes>
-          <Route path="/" element={user ? <Dashboard /> : <Navigate to="/login" />} />
+          <Route path="/" element={user ? <Dashboard /> : <LandingPage />} />
           <Route path="/video/:id" element={user ? <VideoDetail /> : <Navigate to="/login" />} />
           <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
           <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Suspense>
     </Router>
